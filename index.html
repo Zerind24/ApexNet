@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ApexNet Esport | Official Club</title>
+    
+    <!-- ========================================================================= -->
+    <!--            1. ITT ÍRD ÁT A SZÖVEGEKET, JÁTÉKOSOKAT ÉS MECCSEKET            -->
+    <!-- ========================================================================= -->
+    <script>
+        const APEX_CONFIG = {
+            // MECCS STATÚSZ OPCIÓK: 'nincs' | 'hamarosan' | 'elo' | 'vege'
+            meccsStatusz: 'nincs', 
+            ellenfelNeve: 'TBA Team',
+            meccsTipus: 'meccs (5v5)',
+
+            // CSAPAT TAGOK MÓDOSÍTÁSA
+            roster: [
+                { nev: 'Zerind (^▽^)', szerep: 'Captain' },
+                { nev: 'TBA',           szerep: 'In-Game Leader' },
+                { nev: 'TBA',           szerep: 'Lurker' },
+                { nev: 'danipuska14',   szerep: 'Entry Fragger' },
+                { nev: 'TBA',           szerep: 'Support' },
+                { nev: 'Ghosty',        szerep: 'Rifler' }
+            ],
+
+            // 1. HÍR BLOKK
+            hir1: {
+                cim: "Az Apex csapat alakulás",
+                szoveg: "Most kezdtük a szerverren lehet rangot szerzeni",
+                datum: "2026.06.12."
+            },
+            
+            // 2. HÍR BLOKK
+            hir2: {
+                cim: "Várjuk az új jelentkezőket!",
+                szoveg: "Néhány szerepkörre még keresünk tehetséges játékosokat. Csatlakozz Discordunkhoz!",
+                datum: "2026.06.11."
+            },
+
+            // FŐ BANNER HÁTTÉRKÉP
+            hatterKep: 'https://media.discordapp.net/attachments/1515749344551112846/1522679456177586236/60155d14-4490-46cf-a8b0-ae88c2aeba08.png?ex=6a495940&is=6a4807c0&hm=e8c28615d0ee77f7f824729be73d80fe1be317ee007546bc00595b93159d8fa0&=&format=webp&quality=lossless'
+        };
+    </script>
+    <!-- ========================================================================= -->
+
+    <style>
+        :root {
+            --bg-dark: #030306;
+            --bg-card-gradient: linear-gradient(145deg, #0d0f1a, #050509);
+            --accent: #ff0044;
+            --accent-glow: rgba(255, 0, 68, 0.4);
+            --accent-white: #ffffff;
+            --accent-blue: #00d2ff;
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --success: #00ff88;
+            --transition-smooth: cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; width: 100%; }
+
+        /* Navigáció */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 8%; background: linear-gradient(to bottom, rgba(5, 5, 9, 0.95), rgba(5, 5, 8, 0)); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); position: fixed; width: 100%; top: 0; z-index: 100; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
+        .nav-logo-container { display: flex; align-items: center; gap: 12px; }
+        .nav-logo-svg { width: 38px; height: 38px; filter: drop-shadow(0 0 8px var(--accent)); transition: transform var(--transition-smooth); }
+        .nav-logo-container:hover .nav-logo-svg { transform: rotate(-10deg) scale(1.1); }
+        
+        .logo { font-size: 24px; font-weight: 900; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
+        .logo span { color: var(--accent); text-shadow: 0 0 15px rgba(255, 0, 68, 0.8); }
+        
+        .nav-links a { color: #94a3b8; text-decoration: none; font-weight: 700; text-transform: uppercase; font-size: 12px; margin-left: 25px; position: relative; padding-bottom: 4px; transition: color 0.3s; }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background-color: var(--accent); transition: width 0.3s var(--transition-smooth); }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* Hero és Lebegő logó */
+        .hero { height: 100vh; min-height: 600px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px; }
+        .hero-logo-art { width: 140px; height: 140px; margin-bottom: 20px; filter: drop-shadow(0 0 25px rgba(255, 0, 68, 0.6)); animation: float 4s ease-in-out infinite; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        
+        .hero h1 { font-size: 50px; color: #fff; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 4px; }
+        .hero h1 span { background: linear-gradient(45deg, var(--accent-white), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 16px; color: #cbd5e1; margin-bottom: 40px; max-width: 600px; line-height: 1.6; }
+        
+        /* 🔥 AZ EGYETLEN DŐLT ÉS PIROS GOMB - MINDEN ESZKÖZÖN STABIL 🔥 */
+        .btn-discord { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center;
+            background: linear-gradient(135deg, #ff0044, #990029); 
+            color: #fff; 
+            text-decoration: none; 
+            padding: 18px 45px; 
+            font-weight: 900; 
+            font-style: italic; 
+            font-size: 14px;
+            border-radius: 4px; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            transform: skewX(-12deg); 
+            box-shadow: 0 0 20px rgba(255, 0, 68, 0.4); 
+            max-width: 100%;
+            text-align: center;
+            transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth), background 0.3s; 
+        }
+        .btn-discord span {
+            display: inline-block;
+            transform: skewX(4deg); 
+        }
+        .btn-discord:hover { 
+            transform: skewX(-12deg) translateY(-4px) scale(1.04); 
+            box-shadow: 0 12px 35px rgba(255, 0, 68, 0.5), 0 0 15px #ff0044; 
+            background: linear-gradient(135deg, #ff1a57, #cc0037);
+        }
+        .btn-discord:active { transform: skewX(-12deg) translateY(-1px); }
+
+        /* Statok */
+        .stats-section { background-color: #05060b; padding: 30px 20px; display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
+        .stat-item { text-align: center; min-width: 120px; transition: transform 0.3s; }
+        .stat-item:hover { transform: scale(1.08); }
+        .stat-number { font-size: 36px; font-weight: 900; color: #fff; }
+        .stat-title { font-size: 11px; text-transform: uppercase; color: var(--accent); font-weight: 800; letter-spacing: 1px; margin-top: 5px; }
+
+        /* Grid felépítés */
+        .container { max-width: 1300px; margin: 50px auto; padding: 0 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 35px; }
+        .card-box { background: var(--bg-card-gradient); padding: 35px; border-radius: 16px; border: 1px solid rgba(255, 0, 68, 0.08); margin-bottom: 35px; position: relative; transition: border-color 0.4s, transform 0.4s var(--transition-smooth); }
+        .card-box:hover { border-color: rgba(255, 0, 68, 0.25); transform: translateY(-2px); }
+        .card-box::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, var(--accent-white), var(--accent)); border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+        .card-box h2 { color: #fff; font-size: 24px; font-weight: 800; margin-bottom: 25px; text-transform: uppercase; }
+
+        /* Szuper Meccs Kijelző */
+        .match-ticker { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
+        .match-ticker:hover { background: rgba(255, 255, 255, 0.04); }
+        .ticker-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .status-badge { display: flex; align-items: center; font-size: 12px; text-transform: uppercase; font-weight: 800; padding: 6px 14px; border-radius: 6px; background: rgba(255,255,255,0.03); }
+        
+        @keyframes pulse-red { 0% { opacity: 0.3; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 15px #ff0000; } 100% { opacity: 0.3; transform: scale(0.9); } }
+
+        /* Hírek Animációja */
+        .news-item { margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; transition: transform 0.3s var(--transition-smooth), padding-left 0.3s; }
+        .news-item:hover { transform: translateX(5px); padding-left: 5px; }
+        .news-item:last-child { border-bottom: none; }
+        .news-title { color: var(--accent); font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+        .news-desc { color: #94a3b8; font-size: 14px; line-height: 1.5; }
+        .news-date { color: #64748b; font-size: 11px; display: block; margin-top: 8px; }
+
+        /* Pályák Kép-Zoom Animáció */
+        .map-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .map-card { position: relative; height: 110px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; transition: transform 0.3s var(--transition-smooth), border-color 0.3s; background-size: cover !important; background-position: center !important; }
+        .map-card::before { content: ''; position: absolute; inset: 0; background: rgba(5, 7, 12, 0.6); transition: background 0.3s; z-index: 1; }
+        .map-card span { position: relative; z-index: 2; color: #fff; font-weight: 900; text-transform: uppercase; font-size: 16px; transition: transform 0.3s; }
+        .map-card:hover { transform: scale(1.03); border-color: var(--accent); }
+        .map-card:hover::before { background: rgba(5, 7, 12, 0.3); }
+        .map-card:hover span { transform: scale(1.1); text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+
+        /* Játékos kártya animáció */
+        .roster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .player-card { background: linear-gradient(145deg, #0e101b, #04050a); padding: 25px 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.02); transition: transform 0.3s var(--transition-smooth), border-color 0.3s, box-shadow 0.3s; }
+        .player-card:hover { transform: translateY(-5px); border-color: rgba(255, 0, 68, 0.3); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        .player-card.captain { border: 1px solid rgba(0, 210, 255, 0.2); }
+        .player-card.captain:hover { border-color: var(--accent-blue); box-shadow: 0 8px 20px rgba(0, 210, 255, 0.15); }
+        .p-name { font-size: 15px; font-weight: 800; color: #fff; }
+        .p-role { font-size: 11px; text-transform: uppercase; font-weight: 800; margin-top: 8px; }
+
+        /* Jelentkezési banner gombja (Letisztult fehér) */
+        .join-banner { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 25px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .join-banner h4 { color: #fff; text-transform: uppercase; }
+        .btn-apply { 
+            background-color: transparent; 
+            color: #fff; 
+            border: 2px solid #fff; 
+            padding: 10px 24px; 
+            border-radius: 6px; 
+            text-transform: uppercase; 
+            font-weight: 800; 
+            text-decoration: none; 
+            font-size: 12px; 
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s; 
+        }
+        .btn-apply:hover { background-color: #fff; color: var(--bg-dark); transform: scale(1.05); }
+
+        /* Oldalsáv (Új, reszponzív fegyveracél/gunmetal dizájn - NEM KÉK) */
+        .sidebar-box { background: var(--bg-card-gradient); padding: 30px; border-radius: 16px; border: 1px solid rgba(255, 0, 68, 0.08); text-align: center; }
+        .sidebar-box h3 { color: #fff; margin-bottom: 15px; text-transform: uppercase; }
+        .discord-widget { border-radius: 12px; overflow: hidden; border: none; margin-bottom: 20px; background-color: #0b0d16; width: 100%; }
+        
+        .btn-discord-sidebar { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            background-color: rgba(255, 255, 255, 0.05); 
+            color: #fff; 
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            text-decoration: none; 
+            padding: 14px; 
+            font-weight: 800; 
+            border-radius: 8px; 
+            text-transform: uppercase; 
+            font-size: 13px; 
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.2s, border-color 0.2s, transform 0.2s; 
+        }
+        .btn-discord-sidebar:hover { 
+            background-color: rgba(255, 255, 255, 0.12); 
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px); 
+        }
+
+        footer { background-color: #020204; text-align: center; padding: 30px; font-size: 13px; color: var(--text-muted); }
+
+        /* MOBIL INTEGRÁCIÓ ÉS VÉDELEM */
+        @media (max-width: 900px) {
+            nav { padding: 15px 5%; }
+            .nav-links a { margin-left: 15px; font-size: 11px; }
+            .hero h1 { font-size: 36px; }
+            .container { grid-template-columns: 1fr; gap: 25px; margin: 25px auto; }
+            .card-box, .sidebar-box { padding: 25px; }
+            .match-ticker { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .status-badge { width: 100%; justify-content: center; }
+        }
+        @media (max-width: 480px) { 
+            .nav-links { display: none; } 
+            .hero h1 { font-size: 30px; letter-spacing: 2px; } 
+            .hero p { font-size: 14px; }
+            .btn-discord { width: 100%; padding: 16px 20px; font-size: 13px; } /* Mobilon se lóg ki a piros gomb */
+            .stats-section { gap: 20px; } 
+            .stat-item { min-width: 40%; } 
+            .join-banner { justify-content: center; text-align: center; }
+            .btn-apply { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-logo-container">
+            <svg class="nav-logo-svg" viewBox="0 0 100 100">
+                <path d="M15 80 L50 15 L53 15 L25 80 Z" fill="#ffffff"/>
+                <path d="M85 80 L50 15 L47 15 L75 80 Z" fill="#ffffff"/>
+                <path d="M32 65 L50 30 L68 65 L58 65 L50 48 L42 65 Z" fill="#ff0044"/>
+            </svg>
+            <div class="logo">Apex<span>Net</span></div>
+        </div>
+        <div class="nav-links">
+            <a href="#match-status">Meccsek</a>
+            <a href="#maps">Pályák</a>
+            <a href="#news">Hírek</a>
+            <a href="#roster">Csapat</a>
+        </div>
+    </nav>
+
+    <section class="hero" id="hero-section">
+        <svg class="hero-logo-art" viewBox="0 0 100 100">
+            <path d="M10 85 L48 12 L50 25 L22 85 Z" fill="#ffffff"/>
+            <path d="M90 85 L52 12 L50 25 L78 85 Z" fill="#ffffff"/>
+            <path d="M28 72 L50 32 L72 72 L60 72 L50 52 L40 72 Z" fill="#ff0044"/>
+            <rect x="38" y="80" width="24" height="4" fill="#ff0044"/>
+        </svg>
+        <h1>WELCOME TO<br><span>APEXNET</span></h1>
+        <p>A jövő Counter-Strike 2 e-sport generációja. Kövesd a fejlődésünket és légy részese a közösségnek az indulástól kezdve.</p>
+        <a href="https://discord.gg/UnjuvXe8q4" target="_blank" class="btn-discord"><span>Csatlakozz a Discordhoz</span></a>
+    </section>
+
+    <section class="stats-section">
+        <div class="stat-item"><div class="stat-number">2026</div><div class="stat-title">Alapítás Éve</div></div>
+        <div class="stat-item"><div class="stat-number">Active</div><div class="stat-title">Klán Státusz</div></div>
+        <div class="stat-item"><div class="stat-number">CS2</div><div class="stat-title">Fő Játékunk</div></div>
+    </section>
+
+    <div class="container">
+        <main>
+            <!-- MECCS PANEL -->
+            <div class="card-box" id="match-status">
+                <h2>Legutóbbi / Aktuális Meccs</h2>
+                <div class="match-ticker" id="ticker-box">
+                    <div id="ticker-info">
+                        <span id="ticker-type" style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 4px;"></span>
+                        <strong id="ticker-teams" style="font-size: 18px; color: #fff;"></strong>
+                    </div>
+                    <div id="ticker-none" style="display: none; color: var(--text-muted); font-style: italic;"></div>
+                    <div class="status-badge" id="badge-area">
+                        <span class="ticker-dot" id="state-dot"></span>
+                        <span id="state-text"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PÁLYÁK -->
+            <div class="card-box" id="maps">
+                <h2>Aktív Pályáink</h2>
+                <div class="map-grid">
+                    <div class="map-card" style="background: url('https://csspot.org/_next/image/?url=https%3A%2F%2Fcsspot.org%2Fuploads%2Fmirage_cc4e12458a.png&w=1920&q=75') center/cover;"><span>Mirage</span></div>
+                    <div class="map-card" style="background: url('https://img-cdn.hltv.org/gallerypicture/u8xqzbJwQvWQ9d8IpUfKbV.jpg?auto=compress&ixlib=java-2.1.0&q=75&w=800&s=60265b3f73aab158bb42481c93706a5b') center/cover;"><span>Inferno</span></div>
+                    <div class="map-card" style="background: url('https://prosettings.net/wp-content/uploads/cs2-nuke-update.jpg') center/cover;"><span>Nuke</span></div>
+                </div>
+            </div>
+
+            <!-- HÍREK -->
+            <div class="card-box" id="news">
+                <h2>Friss Hírek & Eredmények</h2>
+                <div class="news-item"><div class="news-title" id="h1-c" style="color:var(--accent)"></div><div class="news-desc" id="h1-sz"></div><span class="news-date" id="h1-d"></span></div>
+                <div class="news-item"><div class="news-title" id="h2-c" style="color:#fff"></div><div class="news-desc" id="h2-sz"></div><span class="news-date" id="h2-d"></span></div>
+            </div>
+
+            <!-- ROSTER -->
+            <div class="card-box" id="roster">
+                <h2>CS2 Kezdőcsapat</h2>
+                <div class="roster-grid" id="roster-container"></div>
+                <div class="join-banner">
+                    <div>
+                        <h4>Szeretnél a csapat tagja lenni?</h4>
+                        <p style="font-size: 13px; color: #94a3b8;">Lépj be hozzánk Discordra és jelentkezz!</p>
+                    </div>
+                    <a href="https://discord.gg/UnjuvXe8q4" target="_blank" class="btn-apply">Csatlakozom</a>
+                </div>
+            </div>
+        </main>
+
+        <aside>
+            <div class="sidebar-box">
+                <h3>Közösség</h3>
+                <iframe src="https://discord.com/widget?id=1515740237446254642&theme=dark" width="100%" height="450" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts" class="discord-widget"></iframe>
+                <a href="https://discord.gg/UnjuvXe8q4" target="_blank" class="btn-discord-sidebar">Azonnali belépés</a>
+            </div>
+        </aside>
+    </div>
+
+    <footer><p>&copy; 2026 ApexNet Esport. Designed for Champions.</p></footer>
+
+    <!-- INTERAKTÍV MOTOR -->
+    <script>
+        document.getElementById('hero-section').style.background = `linear-gradient(rgba(3, 3, 6, 0.75), rgba(3, 3, 6, 0.98)), url('${APEX_CONFIG.hatterKep}') center/cover no-repeat`;
+
+        const info = document.getElementById('ticker-info');
+        const none = document.getElementById('ticker-none');
+        const dot = document.getElementById('state-dot');
+        const txt = document.getElementById('state-text');
+
+        if(APEX_CONFIG.meccsStatusz === 'nincs') {
+            info.style.display = 'none';
+            none.style.display = 'block';
+            none.innerText = 'Jelenleg nincs kitűzött vagy folyamatban lévő mérkőzésünk.';
+            document.getElementById('badge-area').style.display = 'none';
+        } else {
+            document.getElementById('ticker-type').innerText = APEX_CONFIG.meccsTipus;
+            document.getElementById('ticker-teams').innerHTML = `ApexNet <span style="color:var(--accent)">vs</span> ${APEX_CONFIG.ellenfelNeve}`;
+            
+            if(APEX_CONFIG.meccsStatusz === 'hamarosan') {
+                dot.style.backgroundColor = 'var(--success)';
+                dot.style.boxShadow = '0 0 10px var(--success)';
+                txt.innerText = 'Hamarosan indul';
+                txt.style.color = 'var(--success)';
+            } else if(APEX_CONFIG.meccsStatusz === 'elo') {
+                dot.style.backgroundColor = '#ff0000';
+                dot.style.boxShadow = '0 0 14px #ff0000';
+                dot.style.animation = 'pulse-red 1s infinite';
+                txt.innerText = 'ÉLŐBEN MEGY';
+                txt.style.color = '#ff0000';
+                txt.style.fontWeight = '900';
+            } else if(APEX_CONFIG.meccsStatusz === 'vege') {
+                dot.style.backgroundColor = 'var(--text-muted)';
+                txt.innerText = 'Véget ért';
+                txt.style.color = 'var(--text-muted)';
+            }
+        }
+
+        document.getElementById('h1-c').innerText = APEX_CONFIG.hir1.cim;
+        document.getElementById('h1-sz').innerText = APEX_CONFIG.hir1.szoveg;
+        document.getElementById('h1-d').innerText = APEX_CONFIG.hir1.datum;
+
+        document.getElementById('h2-c').innerText = APEX_CONFIG.hir2.cim;
+        document.getElementById('h2-sz').innerText = APEX_CONFIG.hir2.szoveg;
+        document.getElementById('h2-d').innerText = APEX_CONFIG.hir2.datum;
+
+        const container = document.getElementById('roster-container');
+        APEX_CONFIG.roster.forEach(p => {
+            const isCap = p.szerep.toLowerCase().includes('captain');
+            const card = document.createElement('div');
+            card.className = `player-card ${isCap ? 'captain' : ''}`;
+            card.innerHTML = `
+                <div class="p-name">${p.nev}</div>
+                <div class="p-role" style="color: ${isCap ? 'var(--accent-blue)' : 'var(--accent)'}">${p.szerep}</div>
+            `;
+            container.appendChild(card);
+        });
+    </script>
+</body>
+</html>
