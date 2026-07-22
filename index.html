@@ -6,7 +6,7 @@
     <title>ApexNet Esport | Official Club</title>
     
     <!-- ========================================================================= -->
-    <!--            1. ITT ÍRD ÁT A SZÖVEGEKET, JÁTÉKOSOKAT ÉS MECCSEKET            -->
+    <!--             1. ITT ÍRD ÁT A SZÖVEGEKET, JÁTÉKOSOKAT ÉS MECCSEKET            -->
     <!-- ========================================================================= -->
     <script>
         const APEX_CONFIG = {
@@ -15,14 +15,13 @@
             ellenfelNeve: 'BFC│Kanto 🍆',
             meccsTipus: 'meccs (5v5)',
 
-            // CSAPAT TAGOK MÓDOSÍTÁSA
+            // CSAPAT TAGOK MÓDOSÍTÁSA (5 fős kezdőcsapat)
             roster: [
-                { nev: 'Zerind (^▽^)', szerep: 'Captain' },
-                { nev: 'TBA',           szerep: 'In-Game Leader' },
-                { nev: 'daved0562',           szerep: 'Lurker' },
-                { nev: 'Ri_Zi',   szerep: 'Entry Fragger' },
-                { nev: 'TBA',           szerep: 'Support' },
-                { nev: 'Ghosty',        szerep: 'Rifler' }
+                { nev: 'Zerind (^▽^)', szerep: 'Captain / IGL' },
+                { nev: 'Latt1k',           szerep: 'AWPer' },
+                { nev: 'daved0562',        szerep: 'Lurker' },
+                { nev: 'Ri_Zi',            szerep: 'Entry Fragger' },
+                { nev: 'TBA',              szerep: 'Support / Anchor' }
             ],
 
             // 1. HÍR BLOKK
@@ -52,7 +51,6 @@
             --accent: #ff0044;
             --accent-glow: rgba(255, 0, 68, 0.4);
             --accent-white: #ffffff;
-            --accent-blue: #00d2ff;
             --text-main: #f1f5f9;
             --text-muted: #64748b;
             --success: #00ff88;
@@ -156,14 +154,12 @@
         .map-card:hover::before { background: rgba(5, 7, 12, 0.3); }
         .map-card:hover span { transform: scale(1.1); text-shadow: 0 0 10px rgba(0,0,0,0.8); }
 
-        /* Játékos kártya animáció */
+        /* Játékos kártya animáció (EGYSÉGESEN PIROS) */
         .roster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .player-card { background: linear-gradient(145deg, #0e101b, #04050a); padding: 25px 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.02); transition: transform 0.3s var(--transition-smooth), border-color 0.3s, box-shadow 0.3s; }
         .player-card:hover { transform: translateY(-5px); border-color: rgba(255, 0, 68, 0.3); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
-        .player-card.captain { border: 1px solid rgba(0, 210, 255, 0.2); }
-        .player-card.captain:hover { border-color: var(--accent-blue); box-shadow: 0 8px 20px rgba(0, 210, 255, 0.15); }
         .p-name { font-size: 15px; font-weight: 800; color: #fff; }
-        .p-role { font-size: 11px; text-transform: uppercase; font-weight: 800; margin-top: 8px; }
+        .p-role { font-size: 11px; text-transform: uppercase; font-weight: 800; margin-top: 8px; color: var(--accent); }
 
         /* Jelentkezési banner gombja (Letisztult fehér) */
         .join-banner { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 25px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
@@ -183,7 +179,7 @@
         }
         .btn-apply:hover { background-color: #fff; color: var(--bg-dark); transform: scale(1.05); }
 
-        /* Oldalsáv (Új, reszponzív fegyveracél/gunmetal dizájn - NEM KÉK) */
+        /* Oldalsáv */
         .sidebar-box { background: var(--bg-card-gradient); padding: 30px; border-radius: 16px; border: 1px solid rgba(255, 0, 68, 0.08); text-align: center; }
         .sidebar-box h3 { color: #fff; margin-bottom: 15px; text-transform: uppercase; }
         .discord-widget { border-radius: 12px; overflow: hidden; border: none; margin-bottom: 20px; background-color: #0b0d16; width: 100%; }
@@ -227,7 +223,7 @@
             .nav-links { display: none; } 
             .hero h1 { font-size: 30px; letter-spacing: 2px; } 
             .hero p { font-size: 14px; }
-            .btn-discord { width: 100%; padding: 16px 20px; font-size: 13px; } /* Mobilon se lóg ki a piros gomb */
+            .btn-discord { width: 100%; padding: 16px 20px; font-size: 13px; }
             .stats-section { gap: 20px; } 
             .stat-item { min-width: 40%; } 
             .join-banner { justify-content: center; text-align: center; }
@@ -309,7 +305,7 @@
 
             <!-- ROSTER -->
             <div class="card-box" id="roster">
-                <h2>CS2 Kezdőcsapat</h2>
+                <h2>CS2 Kezdőcsapat (5v5)</h2>
                 <div class="roster-grid" id="roster-container"></div>
                 <div class="join-banner">
                     <div>
@@ -379,12 +375,11 @@
 
         const container = document.getElementById('roster-container');
         APEX_CONFIG.roster.forEach(p => {
-            const isCap = p.szerep.toLowerCase().includes('captain');
             const card = document.createElement('div');
-            card.className = `player-card ${isCap ? 'captain' : ''}`;
+            card.className = 'player-card';
             card.innerHTML = `
                 <div class="p-name">${p.nev}</div>
-                <div class="p-role" style="color: ${isCap ? 'var(--accent-blue)' : 'var(--accent)'}">${p.szerep}</div>
+                <div class="p-role">${p.szerep}</div>
             `;
             container.appendChild(card);
         });
